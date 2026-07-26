@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExamSmart V3 — Student & Admin Platform</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:linear-gradient(135deg,#421b7a,#7c36c8);color:#fff;padding:16px;position:sticky;top:0;z-index:10}.wrap{max-width:1050px;margin:auto}
+.brand{font-size:24px;font-weight:800}.tag{font-size:13px;opacity:.9;margin-top:3px}
+nav{display:flex;gap:8px;overflow:auto;margin-top:14px}nav button{white-space:nowrap;background:#ffffff22;color:#fff;border:1px solid #ffffff44;padding:9px 12px;border-radius:20px}
+main{max-width:1050px;margin:auto;padding:18px 14px 50px}.page{display:none}.page.active{display:block}
+.hero,.panel{background:#fff;border-radius:18px;padding:20px;box-shadow:0 5px 20px #0000000b;margin-bottom:16px}
+.hero h1{margin:0 0 8px;font-size:27px}.muted{color:#667085;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:#fff;border:1px solid #e7e8ee;border-radius:16px;padding:16px;cursor:pointer}.card:hover{box-shadow:0 7px 22px #00000012}
+.icon{font-size:26px}.card b{display:block;margin:8px 0 4px}
+button{border:0;border-radius:10px;padding:11px 15px;background:#6b2bbd;color:#fff;font-weight:700;cursor:pointer}.light{background:#eee8f7;color:#5d239d}.danger{background:#b42318}
+input,select,textarea{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin:6px 0 12px;font-size:15px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:#f7f7fa;padding:14px;border-radius:12px}
+table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
+.badge{display:inline-block;padding:5px 9px;border-radius:15px;background:#eee8f7;color:#5d239d;font-size:12px;font-weight:700}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal.show{display:flex}.modalbox{background:#fff;border-radius:18px;padding:22px;width:min(520px,100%);max-height:90vh;overflow:auto}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}.statgrid{grid-template-columns:repeat(4,1fr)}.row3{grid-template-columns:repeat(3,1fr)}}
+footer{text-align:center;color:#777;padding:20px;font-size:13px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">🎯 ExamSmart</div><div class="tag">Version 3 • Student Dashboard + Question Bank + Admin Panel</div>
+<nav>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('exams')">Exams</button>
+<button onclick="showPage('dashboard')">Student Dashboard</button>
+<button onclick="showPage('questionBank')">Question Bank</button>
+<button onclick="showPage('admin')">Admin Panel</button>
+</nav></div></header>
+
+<main>
+<section id="home" class="page active">
+<div class="hero"><h1>Smart Competitive Exam Preparation 🚀</h1><p class="muted">Version 3 prototype: Student dashboard, searchable question bank और admin management.</p><br><div class="actions"><button onclick="showPage('exams')">Start Preparation</button><button class="light" onclick="showPage('dashboard')">My Dashboard</button></div></div>
+<h2>📚 Exam Categories</h2><div class="grid">
+<div class="card" onclick="selectExam('SSC')"><div class="icon">📘</div><b>SSC</b><span class="muted">CGL • CHSL • MTS</span></div>
+<div class="card" onclick="selectExam('Railway')"><div class="icon">🚆</div><b>Railway</b><span class="muted">NTPC • Group D</span></div>
+<div class="card"><div class="icon">🏦</div><b>Banking</b><span class="muted">Ready to add</span></div>
+<div class="card"><div class="icon">👮</div><b>Police</b><span class="muted">Ready to add</span></div>
+</div></section>
+
+<section id="exams" class="page">
+<div class="panel"><h2>🎯 Choose Exam & Test</h2><div class="row">
+<div><label>Exam</label><select id="examSelect" onchange="refreshTestList()"><option>SSC</option><option>Railway</option><option>Banking</option><option>Police</option></select></div>
+<div><label>Language</label><select id="lang"><option value="hi">Hindi</option><option value="en">English</option></select></div>
+</div><div class="row">
+<div><label>Difficulty</label><select id="level"><option>Easy</option><option selected>Moderate</option><option>Hard / High</option><option>Advanced</option><option>Exam Level</option></select></div>
+<div><label>Test Type</label><select id="type"><option>Full Mock</option><option>Subject Test</option><option>Topic Test</option><option>Exam Pattern</option></select></div>
+</div><button onclick="beginDemoTest()">Start Demo Test</button></div>
+<div class="panel"><h3>📝 Available Test Series</h3><div id="testList"></div></div></section>
+
+<section id="dashboard" class="page">
+<div class="panel"><h2>👤 Student Dashboard</h2><p>Welcome, <b id="studentName">Demo Student</b></p><div class="statgrid">
+<div class="stat"><b id="totalTests">0</b><br>Tests Attempted</div><div class="stat"><b id="avgScore">0%</b><br>Average Accuracy</div><div class="stat"><b id="bestScore">0%</b><br>Best Accuracy</div><div class="stat"><b id="weakTopic">—</b><br>Weak Topic</div>
+</div></div>
+<div class="panel"><h3>📈 Test History</h3><table><thead><tr><th>Exam</th><th>Level</th><th>Score</th><th>Accuracy</th></tr></thead><tbody id="history"></tbody></table></div>
+<div class="panel"><h3>🎯 Recommended Practice</h3><div id="recommendation" class="badge">Take your first test to get personalized recommendations.</div></div>
+</section>
+
+<section id="questionBank" class="page">
+<div class="panel"><h2>🗂️ Question Bank</h2><div class="row"><input id="searchQ" placeholder="Question search..." oninput="renderQuestions()"><select id="filterExam" onchange="renderQuestions()"><option>All</option><option>SSC</option><option>Railway</option></select></div><div id="questionTable"></div></div>
+</section>
+
+<section id="admin" class="page">
+<div class="panel"><h2>⚙️ Admin Panel</h2><p class="muted">यह prototype browser में data manage करता है। Production में secure server-side authentication और database जरूरी होगा।</p>
+<div class="row"><div><label>Admin Name</label><input id="adminName" value="Admin"></div><div><label>Publish Status</label><select id="publish"><option>Draft</option><option>Published</option></select></div></div>
+<h3>➕ Add New Question</h3>
+<div class="row"><input id="qExam" placeholder="Exam (e.g. SSC)"><input id="qSubject" placeholder="Subject"></div>
+<input id="qText" placeholder="Question">
+<div class="row"><input id="opA" placeholder="Option A"><input id="opB" placeholder="Option B"></div>
+<div class="row"><input id="opC" placeholder="Option C"><input id="opD" placeholder="Option D"></div>
+<div class="row"><select id="answer"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select>
+<select id="qLevel"><option>Easy</option><option>Moderate</option><option>Hard / High</option><option>Advanced</option><option>Exam Level</option></select></div>
+<textarea id="explanation" placeholder="Answer explanation"></textarea>
+<button onclick="addQuestion()">Add Question to Bank</button>
+</div>
+<div class="panel"><h3>📋 Manage Questions</h3><div id="adminQuestions"></div></div>
+</section>
+
+<section id="testPage" class="page">
+<div class="panel"><h2>📝 Demo Test</h2><p class="muted">यह Version 3 में demo flow है। Results local browser में save होंगे।</p><button onclick="finishDemo()">Submit Demo Result</button></div>
+</section>
+</main>
+
+<div id="loginModal" class="modal"><div class="modalbox"><h2>🔐 Student Login Demo</h2><p class="muted">Prototype में नाम दर्ज करें। Production में secure authentication जोड़ा जाएगा।</p><input id="loginName" placeholder="Student Name"><button onclick="login()">Continue</button> <button class="light" onclick="closeModal()">Cancel</button></div></div>
+
+<footer>© 2026 ExamSmart • Version 3 Prototype</footer>
+
+<script>
+const defaultQuestions=[
+{exam:"SSC",subject:"General Awareness",q:"भारत का संविधान कब लागू हुआ?",opts:["15 अगस्त 1947","26 जनवरी 1950","26 नवंबर 1949","2 अक्टूबर 1950"],ans:1,level:"Easy"},
+{exam:"SSC",subject:"Maths",q:"20% of 250 कितना है?",opts:["25","40","50","60"],ans:2,level:"Easy"},
+{exam:"Railway",subject:"Reasoning",q:"श्रृंखला 2, 4, 8, 16, ?",opts:["20","24","32","36"],ans:2,level:"Moderate"},
+{exam:"Railway",subject:"General Awareness",q:"भारत की राजधानी क्या है?",opts:["मुंबई","नई दिल्ली","कोलकाता","चेन्नई"],ans:1,level:"Easy"},
+{exam:"SSC",subject:"Science",q:"पानी का रासायनिक सूत्र क्या है?",opts:["CO2","O2","H2O","NaCl"],ans:2,level:"Moderate"}
+];
+let questions=JSON.parse(localStorage.getItem("examSmartQuestions")||"null")||defaultQuestions;
+let history=JSON.parse(localStorage.getItem("examSmartHistory")||"[]");
+
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");if(id==="questionBank")renderQuestions();if(id==="admin")renderAdmin();if(id==="dashboard")renderDashboard();if(id==="exams")refreshTestList();window.scrollTo(0,0)}
+function selectExam(name){document.getElementById("examSelect").value=name;showPage("exams")}
+function refreshTestList(){let e=document.getElementById("examSelect").value;let levels=["Easy","Moderate","Hard / High","Advanced","Exam Level"];document.getElementById("testList").innerHTML=levels.map(l=>`<div style="padding:12px 0;border-bottom:1px solid #eee"><b>${e} — ${l} Mock Test</b><br><span class="muted">20 Questions • Exam-style practice • Language: Hindi/English</span><br><button style="margin-top:7px" onclick="beginDemoTest('${l}')">Start</button></div>`).join("")}
+function beginDemoTest(level){document.getElementById("level").value=level||document.getElementById("level").value;showPage("testPage")}
+function finishDemo(){let exam=document.getElementById("examSelect").value,level=document.getElementById("level").value;let accuracy=Math.floor(55+Math.random()*40);history.push({exam,level,score:accuracy,accuracy});localStorage.setItem("examSmartHistory",JSON.stringify(history));alert("Demo result saved! Accuracy: "+accuracy+"%");showPage("dashboard")}
+function renderDashboard(){document.getElementById("totalTests").textContent=history.length;if(history.length){let avg=Math.round(history.reduce((s,x)=>s+x.accuracy,0)/history.length),best=Math.max(...history.map(x=>x.accuracy));document.getElementById("avgScore").textContent=avg+"%";document.getElementById("bestScore").textContent=best+"%";document.getElementById("weakTopic").textContent=avg<70?"Maths":"Reasoning";document.getElementById("recommendation").textContent=avg<70?"Recommended: Easy/Moderate Maths Practice":"Recommended: Hard / Exam Level Mock Test"}else{document.getElementById("avgScore").textContent="0%";document.getElementById("bestScore").textContent="0%";document.getElementById("weakTopic").textContent="—"}document.getElementById("history").innerHTML=history.slice().reverse().map(x=>`<tr><td>${x.exam}</td><td>${x.level}</td><td>${x.score}%</td><td>${x.accuracy}%</td></tr>`).join("")||"<tr><td colspan=4>No tests yet</td></tr>"}
+function renderQuestions(){let s=(document.getElementById("searchQ")?.value||"").toLowerCase(),f=document.getElementById("filterExam")?.value||"All";let arr=questions.filter(x=>(f==="All"||x.exam===f)&&x.q.toLowerCase().includes(s));document.getElementById("questionTable").innerHTML=arr.map((x,i)=>`<div style="padding:13px 0;border-bottom:1px solid #eee"><span class="badge">${x.exam} • ${x.subject} • ${x.level}</span><p><b>${i+1}. ${x.q}</b></p><span class="muted">A) ${x.opts[0]} &nbsp; B) ${x.opts[1]} &nbsp; C) ${x.opts[2]} &nbsp; D) ${x.opts[3]}</span></div>`).join("")||"No questions found."}
+function renderAdmin(){document.getElementById("adminQuestions").innerHTML=questions.map((x,i)=>`<div style="padding:12px 0;border-bottom:1px solid #eee"><b>${i+1}. ${x.q}</b><br><span class="muted">${x.exam} • ${x.subject} • ${x.level}</span> <button class="danger" style="float:right;padding:7px 10px" onclick="deleteQuestion(${i})">Delete</button></div>`).join("")}
+function addQuestion(){let q={exam:document.getElementById("qExam").value.trim()||"Other",subject:document.getElementById("qSubject").value.trim()||"General",q:document.getElementById("qText").value.trim(),opts:[opA.value,opB.value,opC.value,opD.value],ans:Number(answer.value),level:qLevel.value,explanation:explanation.value};if(!q.q||q.opts.some(x=>!x)){alert("Question और सभी options भरें.");return}questions.push(q);localStorage.setItem("examSmartQuestions",JSON.stringify(questions));alert("Question added to Question Bank.");["qText","opA","opB","opC","opD","explanation"].forEach(id=>document.getElementById(id).value="");renderAdmin()}
+function deleteQuestion(i){if(confirm("Delete this question?")){questions.splice(i,1);localStorage.setItem("examSmartQuestions",JSON.stringify(questions));renderAdmin()}}
+function login(){let n=document.getElementById("loginName").value.trim();if(n){localStorage.setItem("examSmartStudent",n);document.getElementById("studentName").textContent=n;closeModal();showPage("dashboard")}}
+function closeModal(){document.getElementById("loginModal").classList.remove("show")}
+document.getElementById("studentName").textContent=localStorage.getItem("examSmartStudent")||"Demo Student";
+refreshTestList();renderQuestions();
+</script>
+</body>
+</html>
